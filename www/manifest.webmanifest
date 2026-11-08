@@ -1,0 +1,20 @@
+{
+  "name": "Bin Raider",
+  "short_name": "Bin Raider",
+  "description": "Find second-hand vinyl across UK shops and marketplaces, with the total price and a deal score.",
+  "id": "./",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#F3E9D7",
+  "theme_color": "#15110E",
+  "lang": "en-GB",
+  "categories": ["shopping", "music"],
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/maskable-192.png", "sizes": "192x192", "type": "image/png", "purpose": "maskable" },
+    { "src": "icons/maskable-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

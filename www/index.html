@@ -1,0 +1,135 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>Bin Raider</title>
+  <meta name="description" content="Find second-hand vinyl across UK shops and marketplaces, with the total price and a deal score.">
+  <meta name="theme-color" content="#15110E">
+  <link rel="manifest" href="manifest.webmanifest">
+  <link rel="icon" href="icons/icon-192.png">
+  <link rel="apple-touch-icon" href="icons/icon-192.png">
+  <link rel="stylesheet" href="css/app.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><img src="icons/mark.svg" alt="" width="34" height="34"><span class="word">BIN <b>RAIDER</b></span></div>
+    <span id="modeChip" class="mode-chip mock" role="status">MOCK DATA</span>
+  </header>
+
+  <main id="main">
+    <!-- DIG -->
+    <section id="view-dig" class="view active" aria-label="Search">
+      <form id="searchForm" class="search" autocomplete="off" role="search">
+        <label for="q" class="sr">Artist and album</label>
+        <input id="q" name="q" type="search" placeholder="Artist and album, e.g. Portishead Dummy" enterkeyhint="search" required>
+        <button type="submit" class="btn primary" id="digBtn">Dig</button>
+      </form>
+      <details class="filters" id="filters">
+        <summary>Filters</summary>
+        <div class="filter-grid">
+          <label class="check"><input type="checkbox" id="fUk" checked> UK sellers only</label>
+          <label class="check"><input type="checkbox" id="fBin"> Buy It Now only (eBay)</label>
+          <label class="check"><input type="checkbox" id="fVinyl" checked> Add "vinyl" to searches</label>
+          <label>Max price £<input type="number" id="fMax" inputmode="decimal" min="0" step="1" placeholder="Any"></label>
+          <label>Condition
+            <select id="fCond"><option value="any">Any</option><option value="used">Used</option><option value="new">New</option></select>
+          </label>
+        </div>
+      </details>
+      <div id="recent" class="recent" aria-label="Recent searches"></div>
+
+      <div id="empty" class="empty">
+        <img src="icons/mark.svg" alt="" width="88" height="88">
+        <h2>What are we digging for?</h2>
+        <p>Type an album once. Bin Raider checks prices, scores the deals and opens the search on 15 UK shops and marketplaces.</p>
+      </div>
+
+      <div id="results" hidden>
+        <div id="snapshot" class="card snapshot"></div>
+        <h3 class="section-title" id="listTitle">Cheapest copies</h3>
+        <ol id="listings" class="listings"></ol>
+        <div id="trendCard" class="card trend" hidden></div>
+        <h3 class="section-title">Dig everywhere</h3>
+        <div id="linkGroups"></div>
+      </div>
+    </section>
+
+    <!-- WANTLIST -->
+    <section id="view-want" class="view" aria-label="Wantlist">
+      <div class="view-head">
+        <h2>Wantlist</h2>
+        <button class="btn" id="checkAll" type="button">Check prices</button>
+      </div>
+      <p class="hint">Saved on this phone only. <span class="premium-tag">Premium</span> alerts when a copy drops below your target price.</p>
+      <form id="wantForm" class="card want-add">
+        <input id="wQ" type="text" placeholder="Artist and album" required aria-label="Artist and album">
+        <input id="wT" type="number" inputmode="decimal" min="0" step="0.01" placeholder="Target £" aria-label="Target price in pounds" required>
+        <button class="btn primary" type="submit">Add</button>
+      </form>
+      <ul id="wantlist" class="wantlist"></ul>
+      <div id="wantEmpty" class="empty small"><p>Nothing on your wantlist yet. Add one here, or tap Want on any search result.</p></div>
+    </section>
+
+    <!-- CALCULATOR -->
+    <section id="view-calc" class="view" aria-label="Deal calculator">
+      <h2>Is it a deal?</h2>
+      <p class="hint">Price plus postage against what a copy usually sells for, adjusted for condition.</p>
+      <form id="calcForm" class="card calc">
+        <label>Asking price £<input id="cPrice" type="number" inputmode="decimal" min="0" step="0.01" placeholder="12.00"></label>
+        <label>Postage £<input id="cPost" type="number" inputmode="decimal" min="0" step="0.01" placeholder="3.50"></label>
+        <label>Condition of this copy<select id="cGrade"></select></label>
+        <label>Reference price £ <small>(usual VG+ sold price)</small><input id="cRef" type="number" inputmode="decimal" min="0" step="0.01" placeholder="18.00"></label>
+        <p class="hint tight">Get a reference from the Discogs release page (median sold) or eBay sold listings. Search an album and Bin Raider fills it in.</p>
+      </form>
+      <div id="calcOut" class="card calc-out" aria-live="polite"></div>
+    </section>
+
+    <!-- SETTINGS -->
+    <section id="view-set" class="view" aria-label="Settings">
+      <h2>Settings</h2>
+      <div class="card">
+        <h3>Price data</h3>
+        <div class="seg" role="radiogroup" aria-label="Price data source">
+          <label><input type="radio" name="mode" value="mock" checked><span>Mock</span></label>
+          <label><input type="radio" name="mode" value="live"><span>Live</span></label>
+        </div>
+        <p class="hint" id="modeHint">Mock data is made up so you can try the app. Switch to Live once you add your keys.</p>
+        <label>Discogs personal access token<input id="kDiscogs" type="password" autocomplete="off" placeholder="From discogs.com/settings/developers"></label>
+        <label>eBay OAuth application token<input id="kEbay" type="password" autocomplete="off" placeholder="From developer.ebay.com"></label>
+        <p class="hint tight">Keys stay on this phone. eBay tokens expire after about 2 hours; the Play version will refresh them for you.</p>
+      </div>
+      <div class="card">
+        <h3>Affiliate ids</h3>
+        <label>eBay Partner Network campaign id<input id="aEpn" type="text" inputmode="numeric" placeholder="e.g. 5338000000"></label>
+        <label>Amazon Associates tag<input id="aAmz" type="text" placeholder="e.g. binraider-21"></label>
+        <p class="hint tight">When set, eBay and Amazon links carry your id. Left blank, links are plain.</p>
+      </div>
+      <div class="card">
+        <h3>Premium preview</h3>
+        <label class="check"><input type="checkbox" id="premium" checked> Show Premium features (deal scores on every result, price history)</label>
+        <p class="hint tight">Prototype only. Nothing is charged.</p>
+      </div>
+      <div class="card">
+        <h3>Your data</h3>
+        <button class="btn danger" id="wipe" type="button">Clear wantlist, history and keys</button>
+      </div>
+      <p class="about">Bin Raider prototype 0.1. Prices come from official APIs only. Shop names are trademarks of their owners; Bin Raider is not affiliated with them.</p>
+    </section>
+  </main>
+
+  <nav class="tabs" aria-label="Sections">
+    <button data-tab="dig" class="active" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="M20 20l-4-4"/></svg>Dig</button>
+    <button data-tab="want"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>Wantlist</button>
+    <button data-tab="calc"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="3" width="14" height="18" rx="2"/><path d="M8 7h8M8 12h2M14 12h2M8 16h2M14 16h2"/></svg>Deal</button>
+    <button data-tab="set"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3M4.9 4.9l2.1 2.1M17 17l2.1 2.1M4.9 19.1L7 17M17 7l2.1-2.1"/></svg>Settings</button>
+  </nav>
+
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/deal.js"></script>
+  <script src="js/sites.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

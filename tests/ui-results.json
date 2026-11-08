@@ -1,0 +1,497 @@
+[
+ [
+  "PASS",
+  "small-320x640: home loads, mock chip visible",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: home no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: want view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: calc view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: set view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: search shows mock banner",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: 8 listings",
+  "8"
+ ],
+ [
+  "PASS",
+  "small-320x640: 18 shop links",
+  "18"
+ ],
+ [
+  "PASS",
+  "small-320x640: links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: results no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: tap targets >= 36px tall",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: Check deal opens calculator prefilled",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: calculator maths 12+3.50 vs 20",
+  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+ ],
+ [
+  "PASS",
+  "small-320x640: calc no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: Want adds to wantlist",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: Check prices flags item below \u00a3100 target",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: wantlist survives reload (saved on device)",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: wantlist no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: free tier locks scores except best",
+  "7"
+ ],
+ [
+  "PASS",
+  "small-320x640: Live switch relabels chip",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: Live with no keys degrades gracefully",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: EPN id added to eBay links",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: no JS errors",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: home loads, mock chip visible",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: home no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: want view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: calc view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: set view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: search shows mock banner",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: 8 listings",
+  "8"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: 18 shop links",
+  "18"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: results no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: tap targets >= 36px tall",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Check deal opens calculator prefilled",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: calculator maths 12+3.50 vs 20",
+  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: calc no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Want adds to wantlist",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Check prices flags item below \u00a3100 target",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: wantlist survives reload (saved on device)",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: wantlist no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: free tier locks scores except best",
+  "7"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Live switch relabels chip",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Live with no keys degrades gracefully",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: EPN id added to eBay links",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no JS errors",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: home loads, mock chip visible",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: home no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: want view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: calc view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: set view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: search shows mock banner",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: 8 listings",
+  "8"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: 18 shop links",
+  "18"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: results no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: tap targets >= 36px tall",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Check deal opens calculator prefilled",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: calculator maths 12+3.50 vs 20",
+  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: calc no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Want adds to wantlist",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Check prices flags item below \u00a3100 target",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: wantlist survives reload (saved on device)",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: wantlist no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: free tier locks scores except best",
+  "7"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Live switch relabels chip",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Live with no keys degrades gracefully",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: EPN id added to eBay links",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no JS errors",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: home loads, mock chip visible",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: home no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: want view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: calc view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: set view (fresh load) no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: search shows mock banner",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: 8 listings",
+  "8"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: 18 shop links",
+  "18"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: results no horizontal overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: tap targets >= 36px tall",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Check deal opens calculator prefilled",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: calculator maths 12+3.50 vs 20",
+  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: calc no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Want adds to wantlist",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Check prices flags item below \u00a3100 target",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: wantlist survives reload (saved on device)",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: wantlist no horizontal overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: free tier locks scores except best",
+  "7"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Live switch relabels chip",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Live with no keys degrades gracefully",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: EPN id added to eBay links",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no JS errors",
+  ""
+ ],
+ [
+  "PASS",
+  "manifest: name, standalone, 192+512 icons, maskable",
+  ""
+ ],
+ [
+  "PASS",
+  "asset icons/icon-192.png served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset icons/icon-512.png served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset icons/maskable-512.png served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset sw.js served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset fonts/ArchivoBlack-Regular.ttf served",
+  "200"
+ ],
+ [
+  "PASS",
+  "no Hark branding in app",
+  ""
+ ]
+]

@@ -1,0 +1,7 @@
+{
+  "appId": "uk.binraider.app",
+  "appName": "Bin Raider",
+  "webDir": "www",
+  "android": { "backgroundColor": "#F3E9D7" },
+  "plugins": { "CapacitorHttp": { "enabled": false } }
+}
