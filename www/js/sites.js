@@ -34,7 +34,7 @@
     gumtree: { name: "Gumtree", group: "market", note: "Job lots and clearances", host: "www.gumtree.com", url: function (s) { return "https://www.gumtree.com/search?search_category=all&q=" + s.qv + (s.max ? "&max_price=" + s.max : ""); } },
     depop: { name: "Depop", group: "market", note: "Pop and indie sellers", host: "www.depop.com", url: function (s) { return "https://www.depop.com/search/?q=" + s.qv; } },
     cex: { name: "CeX", group: "shop", note: "Fixed prices, graded stock", host: "uk.webuy.com", url: function (s) { return "https://uk.webuy.com/search?stext=" + s.qv; } },
-    magpie: { name: "musicMagpie", group: "shop", note: "Cheap used popular titles", host: "www.musicmagpie.co.uk", url: function (s) { return "https://www.musicmagpie.co.uk/store/category/?keyword=" + s.q; } },
+    magpie: { name: "musicMagpie", group: "shop", note: "Cheap used titles; shows all formats", host: "www.musicmagpie.co.uk", url: function (s) { return "https://www.musicmagpie.co.uk/store/category/?keyword=" + s.q; } },
     oxfam: { name: "Oxfam Online Shop", group: "shop", note: "Charity stock", host: "onlineshop.oxfam.org.uk", url: function (s) { return "https://onlineshop.oxfam.org.uk/searchresults?Ntt=" + s.q + "&type=search"; } },
     amazon: { name: "Amazon UK", group: "shop", note: "New pressings, cheapest first", host: "www.amazon.co.uk", url: function (s) { return "https://www.amazon.co.uk/s?k=" + s.qv + "&i=popular&s=price-asc-rank" + (s.max ? "&high-price=" + s.max : ""); } },
     hmv: { name: "HMV", group: "shop", note: "High street, frequent sales", host: "hmv.com", url: function (s) { return "https://hmv.com/search?searchtext=" + s.q; } },

@@ -1,0 +1,11 @@
+{
+  "_note": "Doc-shaped sample of GET /marketplace/price_suggestions/{release_id} (needs a Discogs token, so not captured live). Values made up for tests only.",
+  "Mint (M)": { "currency": "GBP", "value": 34.10 },
+  "Near Mint (NM or M-)": { "currency": "GBP", "value": 30.50 },
+  "Very Good Plus (VG+)": { "currency": "GBP", "value": 24.68 },
+  "Very Good (VG)": { "currency": "GBP", "value": 16.20 },
+  "Good Plus (G+)": { "currency": "GBP", "value": 9.75 },
+  "Good (G)": { "currency": "GBP", "value": 6.40 },
+  "Fair (F)": { "currency": "GBP", "value": 4.10 },
+  "Poor (P)": { "currency": "GBP", "value": 2.50 }
+}

@@ -1,7 +1,17 @@
 [
  [
   "PASS",
-  "small-320x640: home loads, mock chip visible",
+  "small-320x640: source chip says Live \u00b7 Discogs",
+  "LIVE \u00b7 DISCOGS"
+ ],
+ [
+  "PASS",
+  "small-320x640: no mock wording on home",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: empty state has 3 example digs",
   ""
  ],
  [
@@ -26,22 +36,77 @@
  ],
  [
   "PASS",
-  "small-320x640: search shows mock banner",
+  "small-320x640: example dig fills the search box",
   ""
  ],
  [
   "PASS",
-  "small-320x640: 8 listings",
-  "8"
+  "small-320x640: 5 Discogs pressings shown",
+  "5"
  ],
  [
   "PASS",
-  "small-320x640: 18 shop links",
+  "small-320x640: 1 search + 5 stats calls, GBP",
+  "['https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'https://api.discogs.com/marketplace/stats/22840?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/1526433?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/10147986?curr_abbr=GBP"
+ ],
+ [
+  "PASS",
+  "small-320x640: no auth header without token",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: pressings sorted cheapest first, real fixture prices",
+  "['\u00a316.67', '\u00a318.75', '\u00a320.00', '\u00a325.00', '\u00a396.75']"
+ ],
+ [
+  "PASS",
+  "small-320x640: pick shows lowest listed now",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: honest count label per pressing",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: links to release + GBP marketplace",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: no verdict stamps without a reference",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: eBay coming-soon note",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: no price history / mock UI",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: 18 shop divider cards",
   "18"
  ],
  [
   "PASS",
-  "small-320x640: links open in new tab with query",
+  "small-320x640: shop links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: musicMagpie note mentions all formats",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: more-pressings link",
   ""
  ],
  [
@@ -51,18 +116,28 @@
  ],
  [
   "PASS",
-  "small-320x640: tap targets >= 36px tall",
-  "0"
+  "small-320x640: tap targets >= 44px",
+  "[]"
  ],
  [
   "PASS",
-  "small-320x640: Check deal opens calculator prefilled",
+  "small-320x640: no clipped text in stickers/stamps/titles/buttons",
+  "[]"
+ ],
+ [
+  "PASS",
+  "small-320x640: repeat search served from cache",
+  "[]"
+ ],
+ [
+  "PASS",
+  "small-320x640: Check deal opens calculator with lowest price",
   ""
  ],
  [
   "PASS",
-  "small-320x640: calculator maths 12+3.50 vs 20",
-  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+  "small-320x640: calculator maths 12+3.50 vs 20 -> 78 good",
+  "TOTAL\n\u00a315.50\nINCL. \u00a33.50 POSTAGE\nGOOD DEAL\n78/100\n\u00a34.50 (22%) under your \u00a320.00 reference for a VG+ copy.\nGood deal at \u00a3"
  ],
  [
   "PASS",
@@ -81,6 +156,11 @@
  ],
  [
   "PASS",
+  "small-320x640: wantlist says where the price is from",
+  ""
+ ],
+ [
+  "PASS",
   "small-320x640: wantlist survives reload (saved on device)",
   ""
  ],
@@ -91,17 +171,72 @@
  ],
  [
   "PASS",
-  "small-320x640: free tier locks scores except best",
-  "7"
+  "small-320x640: token sends Authorization: Discogs token=",
+  "[{'url': 'https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'auth': 'Discogs token=TESTTOKEN123'}]"
  ],
  [
   "PASS",
-  "small-320x640: Live switch relabels chip",
+  "small-320x640: token adds 5 price_suggestions calls",
+  "11"
+ ],
+ [
+  "PASS",
+  "small-320x640: suggested VG+ price labelled",
   ""
  ],
  [
   "PASS",
-  "small-320x640: Live with no keys degrades gracefully",
+  "small-320x640: verdict stamps on all 5 pressings",
+  "5"
+ ],
+ [
+  "PASS",
+  "small-320x640: \u00a316.67 vs \u00a324.68 VG+ stamped Steal",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: results with stamps no overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: stamps not clipped",
+  "0"
+ ],
+ [
+  "PASS",
+  "small-320x640: free tier locks stamps except best",
+  "4"
+ ],
+ [
+  "PASS",
+  "small-320x640: eBay token on web explains it needs the app",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: 429 shows friendly slow-down + countdown",
+  "SLOW DOWN\n\nDiscogs is asking us to slow down. Try again in 60 seconds. The shop links below still work.\n\nTRY AGAIN IN 60S"
+ ],
+ [
+  "PASS",
+  "small-320x640: links still shown on error",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: error state no overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: no results message",
+  ""
+ ],
+ [
+  "PASS",
+  "small-320x640: offline message",
   ""
  ],
  [
@@ -116,7 +251,17 @@
  ],
  [
   "PASS",
-  "galaxy-a-360x800: home loads, mock chip visible",
+  "galaxy-a-360x800: source chip says Live \u00b7 Discogs",
+  "LIVE \u00b7 DISCOGS"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no mock wording on home",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: empty state has 3 example digs",
   ""
  ],
  [
@@ -141,22 +286,77 @@
  ],
  [
   "PASS",
-  "galaxy-a-360x800: search shows mock banner",
+  "galaxy-a-360x800: example dig fills the search box",
   ""
  ],
  [
   "PASS",
-  "galaxy-a-360x800: 8 listings",
-  "8"
+  "galaxy-a-360x800: 5 Discogs pressings shown",
+  "5"
  ],
  [
   "PASS",
-  "galaxy-a-360x800: 18 shop links",
+  "galaxy-a-360x800: 1 search + 5 stats calls, GBP",
+  "['https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'https://api.discogs.com/marketplace/stats/22840?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/1526433?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/10147986?curr_abbr=GBP"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no auth header without token",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: pressings sorted cheapest first, real fixture prices",
+  "['\u00a316.67', '\u00a318.75', '\u00a320.00', '\u00a325.00', '\u00a396.75']"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: pick shows lowest listed now",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: honest count label per pressing",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: links to release + GBP marketplace",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no verdict stamps without a reference",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: eBay coming-soon note",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no price history / mock UI",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: 18 shop divider cards",
   "18"
  ],
  [
   "PASS",
-  "galaxy-a-360x800: links open in new tab with query",
+  "galaxy-a-360x800: shop links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: musicMagpie note mentions all formats",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: more-pressings link",
   ""
  ],
  [
@@ -166,18 +366,28 @@
  ],
  [
   "PASS",
-  "galaxy-a-360x800: tap targets >= 36px tall",
-  "0"
+  "galaxy-a-360x800: tap targets >= 44px",
+  "[]"
  ],
  [
   "PASS",
-  "galaxy-a-360x800: Check deal opens calculator prefilled",
+  "galaxy-a-360x800: no clipped text in stickers/stamps/titles/buttons",
+  "[]"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: repeat search served from cache",
+  "[]"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: Check deal opens calculator with lowest price",
   ""
  ],
  [
   "PASS",
-  "galaxy-a-360x800: calculator maths 12+3.50 vs 20",
-  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+  "galaxy-a-360x800: calculator maths 12+3.50 vs 20 -> 78 good",
+  "TOTAL\n\u00a315.50\nINCL. \u00a33.50 POSTAGE\nGOOD DEAL\n78/100\n\u00a34.50 (22%) under your \u00a320.00 reference for a VG+ copy.\nGood deal at \u00a3"
  ],
  [
   "PASS",
@@ -196,6 +406,11 @@
  ],
  [
   "PASS",
+  "galaxy-a-360x800: wantlist says where the price is from",
+  ""
+ ],
+ [
+  "PASS",
   "galaxy-a-360x800: wantlist survives reload (saved on device)",
   ""
  ],
@@ -206,17 +421,72 @@
  ],
  [
   "PASS",
-  "galaxy-a-360x800: free tier locks scores except best",
-  "7"
+  "galaxy-a-360x800: token sends Authorization: Discogs token=",
+  "[{'url': 'https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'auth': 'Discogs token=TESTTOKEN123'}]"
  ],
  [
   "PASS",
-  "galaxy-a-360x800: Live switch relabels chip",
+  "galaxy-a-360x800: token adds 5 price_suggestions calls",
+  "11"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: suggested VG+ price labelled",
   ""
  ],
  [
   "PASS",
-  "galaxy-a-360x800: Live with no keys degrades gracefully",
+  "galaxy-a-360x800: verdict stamps on all 5 pressings",
+  "5"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: \u00a316.67 vs \u00a324.68 VG+ stamped Steal",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: results with stamps no overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: stamps not clipped",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: free tier locks stamps except best",
+  "4"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: eBay token on web explains it needs the app",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: 429 shows friendly slow-down + countdown",
+  "SLOW DOWN\n\nDiscogs is asking us to slow down. Try again in 60 seconds. The shop links below still work.\n\nTRY AGAIN IN 60S"
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: links still shown on error",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: error state no overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: no results message",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-a-360x800: offline message",
   ""
  ],
  [
@@ -231,7 +501,17 @@
  ],
  [
   "PASS",
-  "pixel-8-412x915: home loads, mock chip visible",
+  "pixel-8-412x915: source chip says Live \u00b7 Discogs",
+  "LIVE \u00b7 DISCOGS"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no mock wording on home",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: empty state has 3 example digs",
   ""
  ],
  [
@@ -256,22 +536,77 @@
  ],
  [
   "PASS",
-  "pixel-8-412x915: search shows mock banner",
+  "pixel-8-412x915: example dig fills the search box",
   ""
  ],
  [
   "PASS",
-  "pixel-8-412x915: 8 listings",
-  "8"
+  "pixel-8-412x915: 5 Discogs pressings shown",
+  "5"
  ],
  [
   "PASS",
-  "pixel-8-412x915: 18 shop links",
+  "pixel-8-412x915: 1 search + 5 stats calls, GBP",
+  "['https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'https://api.discogs.com/marketplace/stats/22840?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/1526433?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/10147986?curr_abbr=GBP"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no auth header without token",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: pressings sorted cheapest first, real fixture prices",
+  "['\u00a316.67', '\u00a318.75', '\u00a320.00', '\u00a325.00', '\u00a396.75']"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: pick shows lowest listed now",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: honest count label per pressing",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: links to release + GBP marketplace",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no verdict stamps without a reference",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: eBay coming-soon note",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no price history / mock UI",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: 18 shop divider cards",
   "18"
  ],
  [
   "PASS",
-  "pixel-8-412x915: links open in new tab with query",
+  "pixel-8-412x915: shop links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: musicMagpie note mentions all formats",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: more-pressings link",
   ""
  ],
  [
@@ -281,18 +616,28 @@
  ],
  [
   "PASS",
-  "pixel-8-412x915: tap targets >= 36px tall",
-  "0"
+  "pixel-8-412x915: tap targets >= 44px",
+  "[]"
  ],
  [
   "PASS",
-  "pixel-8-412x915: Check deal opens calculator prefilled",
+  "pixel-8-412x915: no clipped text in stickers/stamps/titles/buttons",
+  "[]"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: repeat search served from cache",
+  "[]"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: Check deal opens calculator with lowest price",
   ""
  ],
  [
   "PASS",
-  "pixel-8-412x915: calculator maths 12+3.50 vs 20",
-  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+  "pixel-8-412x915: calculator maths 12+3.50 vs 20 -> 78 good",
+  "TOTAL\n\u00a315.50\nINCL. \u00a33.50 POSTAGE\nGOOD DEAL\n78/100\n\u00a34.50 (22%) under your \u00a320.00 reference for a VG+ copy.\nGood deal at \u00a3"
  ],
  [
   "PASS",
@@ -311,6 +656,11 @@
  ],
  [
   "PASS",
+  "pixel-8-412x915: wantlist says where the price is from",
+  ""
+ ],
+ [
+  "PASS",
   "pixel-8-412x915: wantlist survives reload (saved on device)",
   ""
  ],
@@ -321,17 +671,72 @@
  ],
  [
   "PASS",
-  "pixel-8-412x915: free tier locks scores except best",
-  "7"
+  "pixel-8-412x915: token sends Authorization: Discogs token=",
+  "[{'url': 'https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'auth': 'Discogs token=TESTTOKEN123'}]"
  ],
  [
   "PASS",
-  "pixel-8-412x915: Live switch relabels chip",
+  "pixel-8-412x915: token adds 5 price_suggestions calls",
+  "11"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: suggested VG+ price labelled",
   ""
  ],
  [
   "PASS",
-  "pixel-8-412x915: Live with no keys degrades gracefully",
+  "pixel-8-412x915: verdict stamps on all 5 pressings",
+  "5"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: \u00a316.67 vs \u00a324.68 VG+ stamped Steal",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: results with stamps no overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: stamps not clipped",
+  "0"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: free tier locks stamps except best",
+  "4"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: eBay token on web explains it needs the app",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: 429 shows friendly slow-down + countdown",
+  "SLOW DOWN\n\nDiscogs is asking us to slow down. Try again in 60 seconds. The shop links below still work.\n\nTRY AGAIN IN 60S"
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: links still shown on error",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: error state no overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: no results message",
+  ""
+ ],
+ [
+  "PASS",
+  "pixel-8-412x915: offline message",
   ""
  ],
  [
@@ -346,7 +751,17 @@
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: home loads, mock chip visible",
+  "galaxy-s24-ultra-480x1040: source chip says Live \u00b7 Discogs",
+  "LIVE \u00b7 DISCOGS"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no mock wording on home",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: empty state has 3 example digs",
   ""
  ],
  [
@@ -371,22 +786,77 @@
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: search shows mock banner",
+  "galaxy-s24-ultra-480x1040: example dig fills the search box",
   ""
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: 8 listings",
-  "8"
+  "galaxy-s24-ultra-480x1040: 5 Discogs pressings shown",
+  "5"
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: 18 shop links",
+  "galaxy-s24-ultra-480x1040: 1 search + 5 stats calls, GBP",
+  "['https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'https://api.discogs.com/marketplace/stats/22840?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/1526433?curr_abbr=GBP', 'https://api.discogs.com/marketplace/stats/10147986?curr_abbr=GBP"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no auth header without token",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: pressings sorted cheapest first, real fixture prices",
+  "['\u00a316.67', '\u00a318.75', '\u00a320.00', '\u00a325.00', '\u00a396.75']"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: pick shows lowest listed now",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: honest count label per pressing",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: links to release + GBP marketplace",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no verdict stamps without a reference",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: eBay coming-soon note",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no price history / mock UI",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: 18 shop divider cards",
   "18"
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: links open in new tab with query",
+  "galaxy-s24-ultra-480x1040: shop links open in new tab with query",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: musicMagpie note mentions all formats",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: more-pressings link",
   ""
  ],
  [
@@ -396,18 +866,28 @@
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: tap targets >= 36px tall",
-  "0"
+  "galaxy-s24-ultra-480x1040: tap targets >= 44px",
+  "[]"
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: Check deal opens calculator prefilled",
+  "galaxy-s24-ultra-480x1040: no clipped text in stickers/stamps/titles/buttons",
+  "[]"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: repeat search served from cache",
+  "[]"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: Check deal opens calculator with lowest price",
   ""
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: calculator maths 12+3.50 vs 20",
-  "Total with postage\n\u00a315.50\n78\nGood deal\n\u00a34.50 (22%) under the usual \u00a320.00 for a "
+  "galaxy-s24-ultra-480x1040: calculator maths 12+3.50 vs 20 -> 78 good",
+  "TOTAL\n\u00a315.50\nINCL. \u00a33.50 POSTAGE\nGOOD DEAL\n78/100\n\u00a34.50 (22%) under your \u00a320.00 reference for a VG+ copy.\nGood deal at \u00a3"
  ],
  [
   "PASS",
@@ -426,6 +906,11 @@
  ],
  [
   "PASS",
+  "galaxy-s24-ultra-480x1040: wantlist says where the price is from",
+  ""
+ ],
+ [
+  "PASS",
   "galaxy-s24-ultra-480x1040: wantlist survives reload (saved on device)",
   ""
  ],
@@ -436,17 +921,72 @@
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: free tier locks scores except best",
-  "7"
+  "galaxy-s24-ultra-480x1040: token sends Authorization: Discogs token=",
+  "[{'url': 'https://api.discogs.com/database/search?type=release&format=Vinyl&per_page=10&q=Portishead%20Dummy', 'auth': 'Discogs token=TESTTOKEN123'}]"
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: Live switch relabels chip",
+  "galaxy-s24-ultra-480x1040: token adds 5 price_suggestions calls",
+  "11"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: suggested VG+ price labelled",
   ""
  ],
  [
   "PASS",
-  "galaxy-s24-ultra-480x1040: Live with no keys degrades gracefully",
+  "galaxy-s24-ultra-480x1040: verdict stamps on all 5 pressings",
+  "5"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: \u00a316.67 vs \u00a324.68 VG+ stamped Steal",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: results with stamps no overflow",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: stamps not clipped",
+  "0"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: free tier locks stamps except best",
+  "4"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: eBay token on web explains it needs the app",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: 429 shows friendly slow-down + countdown",
+  "SLOW DOWN\n\nDiscogs is asking us to slow down. Try again in 60 seconds. The shop links below still work.\n\nTRY AGAIN IN 60S"
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: links still shown on error",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: error state no overflow",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: no results message",
+  ""
+ ],
+ [
+  "PASS",
+  "galaxy-s24-ultra-480x1040: offline message",
   ""
  ],
  [
@@ -491,7 +1031,37 @@
  ],
  [
   "PASS",
+  "asset fonts/IBMPlexMono-Regular.ttf served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset fonts/IBMPlexMono-Bold.ttf served",
+  "200"
+ ],
+ [
+  "PASS",
+  "asset fonts/OFL-IBMPlexMono.txt served",
+  "200"
+ ],
+ [
+  "PASS",
+  "sw cache name is 0.2.0",
+  ""
+ ],
+ [
+  "PASS",
+  "mono font loaded",
+  ""
+ ],
+ [
+  "PASS",
   "no Hark branding in app",
   ""
+ ],
+ [
+  "PASS",
+  "REAL NETWORK: Discogs search renders pressings with GBP prices",
+  "5 pressings, prices ['\u00a316.67', '\u00a318.75', '\u00a320.00', '\u00a325.00', '\u00a396.75']"
  ]
 ]

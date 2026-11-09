@@ -37,22 +37,88 @@ t("affiliate: eBay EPN params only when id set", () => { const a = Sites.links({
 t("affiliate: Amazon tag", () => { const a = Sites.links({ q: "x" }, { amazonTag: "binraider-21" }); assert.strictEqual(new URL(a.find(l => l.key === "amazon").url).searchParams.get("tag"), "binraider-21"); });
 t("affiliate blank leaves links unchanged", () => assert.deepStrictEqual(Sites.links({ q: "x" }, {}).map(l => l.url), Sites.links({ q: "x" }).map(l => l.url)));
 
-// data layer
+// data layer: Discogs fetch mocked with real captured fixtures (tests/fixtures)
+const fs = require("fs"), path = require("path");
+const FIX = n => JSON.parse(fs.readFileSync(path.join(__dirname, "fixtures", n), "utf8"));
+let calls = [], mode = "ok";
+function res(status, body, headers) { return { ok: status < 400, status, headers: { get: k => (headers || {})[k.toLowerCase()] || null }, json: async () => body }; }
+global.fetch = async (url, opts) => {
+  calls.push({ url, headers: (opts && opts.headers) || {} });
+  if (mode === "offline-net") throw new TypeError("Failed to fetch");
+  const u = new URL(url);
+  if (u.pathname === "/database/search") {
+    if (mode === "429") return res(429, { message: "slow down" }, { "retry-after": "17" });
+    if (mode === "500") return res(500, {});
+    if (mode === "401") return res(401, {});
+    return res(200, /zzqq/.test(u.searchParams.get("q")) ? FIX("search-empty.json") : FIX("search-portishead.json"));
+  }
+  const m = u.pathname.match(/^\/marketplace\/stats\/(\d+)$/);
+  if (m) { const f = path.join(__dirname, "fixtures", "stats-" + m[1] + ".json"); return res(200, fs.existsSync(f) ? FIX("stats-" + m[1] + ".json") : { num_for_sale: 0, lowest_price: null }); }
+  if (u.pathname.startsWith("/marketplace/price_suggestions/")) return (opts.headers || {}).Authorization ? res(200, FIX("price-suggestions-sample.json")) : res(401, {});
+  return res(404, {});
+};
+const fresh = () => { Data.clearCache(); Data._resetLimiter(); calls = []; mode = "ok"; };
+
 (async () => {
-  const a = await Data.mockSearch("Portishead Dummy", {}), b = await Data.mockSearch("portishead dummy", {});
-  t("mock is labelled mock", () => { assert.strictEqual(a.mode, "mock"); assert.ok(a.listings.every(l => l.mock)); });
-  t("mock repeatable for same search", () => assert.deepStrictEqual(a.listings.map(l => l.total), b.listings.map(l => l.total)));
-  t("mock sorted by total, totals add up", () => { for (let i = 0; i < a.listings.length; i++) { const l = a.listings[i]; assert.strictEqual(Math.round((l.price + l.postage) * 100) / 100, l.total); if (i) assert.ok(l.total >= a.listings[i - 1].total); } });
-  t("mock has 12-month history", () => assert.strictEqual(a.history.length, 12));
-  t("eBay Browse parser (doc-shaped sample)", () => {
-    const r = Data.parseEbay({ itemSummaries: [{ itemId: "v1|1|0", title: "Portishead Dummy LP", price: { value: "18.99", currency: "GBP" }, shippingOptions: [{ shippingCost: { value: "3.20", currency: "GBP" } }], condition: "Used", itemWebUrl: "https://www.ebay.co.uk/itm/1", itemLocation: { country: "GB" } }, { itemId: "v1|2|0", title: "no ship", price: { value: "9.00" }, itemWebUrl: "https://www.ebay.co.uk/itm/2" }] }, { epnCampaign: "123" });
-    assert.strictEqual(r.length, 2); assert.strictEqual(r[0].price, 18.99); assert.strictEqual(r[0].postage, 3.2); assert.strictEqual(r[1].postageKnown, false); assert.ok(r[0].url.includes("campid=123"));
+  async function at(name, fn) { try { await fn(); pass++; out.push("PASS " + name); } catch (e) { fail++; out.push("FAIL " + name + " :: " + e.message); } }
+
+  fresh();
+  const r = await Data.search("Portishead Dummy", {});
+  await at("live search: 1 search + 5 stats calls (rate-limit friendly)", () => { assert.strictEqual(calls.length, 6); assert.strictEqual(calls.filter(c => c.url.includes("/marketplace/stats/")).length, 5); });
+  await at("search asks for vinyl releases", () => { const u = new URL(calls[0].url); assert.strictEqual(u.searchParams.get("type"), "release"); assert.strictEqual(u.searchParams.get("format"), "Vinyl"); assert.strictEqual(u.searchParams.get("q"), "Portishead Dummy"); });
+  await at("stats requested in GBP", () => calls.filter(c => c.url.includes("/stats/")).forEach(c => assert.ok(c.url.endsWith("curr_abbr=GBP"))));
+  await at("no auth header without token", () => calls.forEach(c => assert.ok(!c.headers.Authorization)));
+  await at("pressings sorted by lowest listed price", () => assert.deepStrictEqual(r.pressings.map(p => p.lowest), [16.67, 18.75, 20, 25, 96.75]));
+  await at("cheapest = lowest listed now, with count for sale", () => { assert.strictEqual(r.cheapest.id, 1526433); assert.strictEqual(r.cheapest.forSale, 41); assert.strictEqual(r.forSale, 41 + 166 + 22 + 27 + 26); });
+  await at("release fields parsed (year, country, label, format text)", () => { const p = r.pressings.find(x => x.id === 10147986); assert.strictEqual(p.year, "2017"); assert.strictEqual(p.country, "Europe"); assert.strictEqual(p.label, "Go! Beat"); assert.strictEqual(p.album, "Dummy"); assert.strictEqual(p.artist, "Portishead"); assert.ok(p.format.includes("180 Gram, Pallas Pressing")); });
+  await at("release + GBP marketplace links", () => { assert.strictEqual(r.cheapest.url, "https://www.discogs.com/release/1526433"); assert.strictEqual(r.cheapest.marketUrl, "https://www.discogs.com/sell/release/1526433?currency=GBP"); });
+  await at("no reference without token -> no invented score", () => r.pressings.forEach(p => { assert.strictEqual(p.reference, null); assert.strictEqual(p.score, null); }));
+  await at("no sold-price medians or history in results", () => { assert.ok(!("history" in r)); assert.ok(!JSON.stringify(r).toLowerCase().includes("median")); });
+  await at("total pressings from pagination", () => assert.strictEqual(r.totalPressings, 30));
+  await at("eBay: coming soon when no token", () => { assert.strictEqual(r.ebay, null); assert.strictEqual(r.ebayStatus, "soon"); });
+  calls = []; await Data.search("Portishead Dummy", {});
+  await at("repeat search is served from cache (0 calls)", () => assert.strictEqual(calls.length, 0));
+
+  fresh();
+  const t = await Data.search("Portishead Dummy", { keys: { discogsToken: "TKN" } });
+  await at("token: Authorization: Discogs token=… on every call", () => calls.forEach(c => assert.strictEqual(c.headers.Authorization, "Discogs token=TKN")));
+  await at("token: 5 price_suggestions calls", () => assert.strictEqual(calls.filter(c => c.url.includes("/price_suggestions/")).length, 5));
+  await at("token: suggested VG+ used as reference and scored", () => { assert.strictEqual(t.cheapest.suggestedVgPlus.value, 24.68); assert.strictEqual(t.cheapest.reference, 24.68); assert.strictEqual(t.cheapest.score, Deal.score(16.67, 24.68)); assert.strictEqual(t.cheapest.verdict.key, "steal"); });
+  await at("token and no-token results cached separately", () => assert.ok(calls.length > 0));
+  await at("eBay token in Node/web without proxy -> needs-app note, no eBay call", async () => { fresh(); const e = await Data.search("x y", { keys: { ebayToken: "E" } }); assert.strictEqual(e.ebayStatus, "needs-app"); assert.ok(!calls.some(c => c.url.includes("ebay"))); });
+
+  fresh(); mode = "429";
+  await at("429 -> rate error with retry-after", async () => { try { await Data.search("a b", {}); assert.fail("no throw"); } catch (e) { assert.strictEqual(e.kind, "rate"); assert.strictEqual(e.retryAfter, 17); assert.ok(/slow down/i.test(Data.friendly(e))); } });
+  fresh(); mode = "401";
+  await at("401 -> auth error message", async () => { try { await Data.search("a b", { keys: { discogsToken: "bad" } }); assert.fail("no throw"); } catch (e) { assert.strictEqual(e.kind, "auth"); assert.ok(/token/.test(Data.friendly(e))); } });
+  fresh(); mode = "offline-net";
+  await at("network failure while online -> network error", async () => { try { await Data.search("c d", {}); assert.fail("no throw"); } catch (e) { assert.strictEqual(e.kind, "network"); } });
+  fresh(); const navDesc = Object.getOwnPropertyDescriptor(globalThis, "navigator"); Object.defineProperty(globalThis, "navigator", { value: { onLine: false }, configurable: true, writable: true });
+  await at("offline -> offline error, no request made", async () => { try { await Data.search("c d", {}); assert.fail("no throw"); } catch (e) { assert.strictEqual(e.kind, "offline"); assert.strictEqual(calls.length, 0); assert.ok(/offline/i.test(Data.friendly(e))); } });
+  if (navDesc) Object.defineProperty(globalThis, "navigator", navDesc); else delete globalThis.navigator;
+  fresh();
+  await at("no results -> empty pressings, cheapest null", async () => { const e = await Data.search("zzqq nothing", {}); assert.strictEqual(e.pressings.length, 0); assert.strictEqual(e.cheapest, null); assert.strictEqual(calls.length, 1); });
+  fresh(); mode = "429";
+  await at("errors are not cached", async () => { try { await Data.search("e f", {}); } catch (e) {} mode = "ok"; const x = await Data.search("e f", {}); assert.strictEqual(x.pressings.length, 5); });
+
+  await at("limiter waits instead of exceeding 22 calls/min without a token", async () => {
+    fresh(); let now = 1e9; Data._resetLimiter(() => now);
+    // 4 searches = 24 calls; the 23rd must wait for the window
+    let done = 0; const ps = ["q1 a", "q2 a", "q3 a", "q4 a"].map(q => Data.search(q, {}).then(() => done++));
+    await new Promise(r => setTimeout(r, 50));
+    assert.strictEqual(calls.length, 22); assert.ok(done < 4);
+    Data._resetLimiter(); // release
   });
-  t("Discogs parser (doc-shaped sample)", () => {
-    const r = Data.parseDiscogs({ id: 367084, title: "Portishead - Dummy", year: "1994" }, { "Very Good Plus (VG+)": { currency: "GBP", value: 24.6789 } }, { lowest_price: { currency: "GBP", value: 19.5 }, num_for_sale: 212 });
-    assert.strictEqual(r.price, 24.68); assert.strictEqual(r.lowest, 19.5); assert.strictEqual(r.forSale, 212);
+
+  await at("eBay Browse parser (doc-shaped sample)", () => {
+    const e = Data.parseEbay({ itemSummaries: [{ itemId: "v1|1|0", title: "Portishead Dummy LP", price: { value: "18.99", currency: "GBP" }, shippingOptions: [{ shippingCost: { value: "3.20", currency: "GBP" } }], condition: "Used", itemWebUrl: "https://www.ebay.co.uk/itm/1", itemLocation: { country: "GB" } }, { itemId: "v1|2|0", title: "no ship", price: { value: "9.00" }, itemWebUrl: "https://www.ebay.co.uk/itm/2" }] }, { epnCampaign: "123" });
+    assert.strictEqual(e.length, 2); assert.strictEqual(e[0].price, 18.99); assert.strictEqual(e[0].postage, 3.2); assert.strictEqual(e[1].postageKnown, false); assert.ok(e[0].url.includes("campid=123"));
   });
-  const live = await Data.liveSearch("x", { keys: {} });
-  t("live with no keys returns notes, no crash", () => { assert.strictEqual(live.mode, "live"); assert.strictEqual(live.listings.length, 0); assert.ok(live.notes.length === 2); });
+  await at("config: proxyBase present and blank, UA set", () => { assert.strictEqual(Data.config.proxyBase, ""); assert.ok(/^BinRaider\/0\.2 /.test(Data.config.userAgent)); });
+  await at("no mock search exported", () => { assert.strictEqual(Data.mockSearch, undefined); });
+  await at("capacitor config enables CapacitorHttp", () => assert.strictEqual(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "capacitor.config.json"))).plugins.CapacitorHttp.enabled, true));
+  await at("version 0.2.0 everywhere", () => { assert.strictEqual(require("../package.json").version, "0.2.0"); assert.ok(fs.readFileSync(path.join(__dirname, "../www/sw.js"), "utf8").includes("binraider-0.2.0")); assert.ok(fs.readFileSync(path.join(__dirname, "../www/index.html"), "utf8").includes("Bin Raider 0.2.0")); });
+  await at("no Hark branding in www", () => { const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(f => f.isDirectory() ? walk(path.join(d, f.name)) : [path.join(d, f.name)]); walk(path.join(__dirname, "../www")).filter(f => !/\.(png|ttf|woff2?)$/.test(f)).forEach(f => assert.ok(!/hark/i.test(fs.readFileSync(f, "utf8")), f)); });
+
   console.log(out.join("\n")); console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);
 })();
