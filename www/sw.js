@@ -1,5 +1,5 @@
 /* Bin Raider service worker: caches the app shell so it opens offline. Never caches API responses. */
-var CACHE = "binraider-0.2.0";
+var CACHE = "binraider-0.3.0";
 var SHELL = ["./", "index.html", "css/app.css", "js/deal.js", "js/sites.js", "js/data.js", "js/app.js", "manifest.webmanifest",
   "icons/mark.svg", "icons/icon-192.png", "icons/icon-512.png", "fonts/ArchivoBlack-Regular.ttf", "fonts/IBMPlexMono-Regular.ttf", "fonts/IBMPlexMono-Bold.ttf"];
 self.addEventListener("install", function (e) { e.waitUntil(caches.open(CACHE).then(function (c) { return c.addAll(SHELL); }).then(function () { return self.skipWaiting(); })); });

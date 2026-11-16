@@ -66,6 +66,7 @@
 
   // ---------- tabs ----------
   function showTab(name) {
+    if (name === "calc" && !$("cRef").value && store.lastMarket) { $("cRef").value = Number(store.lastMarket.value).toFixed(2); $("refHint").textContent = "Going rate for " + store.lastMarket.query + ": typical delivered price of " + store.lastMarket.count + " LP copies on eBay UK. Change it if you like."; calc(); }
     document.querySelectorAll(".view").forEach(function (v) { v.classList.toggle("active", v.id === "view-" + name); });
     document.querySelectorAll(".tabs button").forEach(function (b) {
       var on = b.getAttribute("data-tab") === name; b.classList.toggle("active", on);
@@ -79,7 +80,7 @@
   // ---------- source chip ----------
   function renderChip() {
     var chip = $("srcChip"), off = navigator.onLine === false;
-    chip.lastChild.textContent = off ? "Offline" : "Live · Discogs";
+    chip.lastChild.textContent = off ? "Offline" : "Live · Discogs + eBay";
     chip.classList.toggle("off", off);
   }
   window.addEventListener("online", renderChip); window.addEventListener("offline", renderChip);
@@ -154,7 +155,18 @@
     }
     var c = res.cheapest;
     var card = el("div", { "class": "pick panel" });
-    card.appendChild(el("p", { "class": "kicker", text: "The pick · cheapest pressing" }));
+    if (res.art) card.appendChild(el("img", { "class": "pick-art", src: res.art, alt: "Album cover", loading: "lazy", referrerpolicy: "no-referrer" }));
+    if (res.market) {
+      store.lastMarket = { value: res.market.value, count: res.market.count, query: res.query }; save();
+      card.appendChild(el("div", { "class": "market" }, [
+        el("span", { "class": "kicker", text: "Going rate" }),
+        el("b", { text: gbp(res.market.value) }),
+        el("span", { "class": "meta", text: "Typical price delivered, from " + res.market.count + " LP copies on eBay UK now (" + gbp(res.market.low) + " to " + gbp(res.market.high) + ")" })
+      ]));
+    }
+    var eb = res.ebay && res.ebay[0];
+    if (eb && c && eb.total < c.total) card.appendChild(el("p", { "class": "hint tight", text: "Cheapest delivered right now is on eBay UK at " + gbp(eb.total) + ", shown below." }));
+    card.appendChild(el("p", { "class": "kicker", text: "Cheapest on Discogs · delivered" }));
     if (!c) {
       card.appendChild(el("div", { "class": "pick-title", text: res.pressings[0].title }));
       card.appendChild(el("p", { "class": "meta", text: "No copies for sale on Discogs right now. Try the shop links below." }));
@@ -163,7 +175,7 @@
     var locked = false;
     var st = c.score != null ? verdictStamp(c.score, c.verdict, locked) : stamp("ink", "Lowest now", null);
     card.appendChild(el("div", { "class": "pick-row" }, [
-      sticker(gbp(c.lowest), { big: true, top: "Lowest", label: "Lowest listed on Discogs now " + gbp(c.lowest) }),
+      sticker(gbp(c.total), { big: true, top: "Delivered", label: "About " + gbp(c.total) + " delivered from Discogs" }),
       el("div", { "class": "pick-body" }, [
         el("div", { "class": "pick-title", text: c.album || c.title }),
         el("div", { "class": "pick-artist", text: c.artist }),
@@ -172,16 +184,16 @@
     ]));
     card.appendChild(st);
     card.appendChild(el("p", { "class": "facts" }, [
-      el("span", { text: "Lowest listed on Discogs now, plus postage" }),
+      el("span", { text: gbp(c.lowest) + " + about " + gbp(c.postEst) + " postage (estimate)" }),
       el("span", { text: c.forSale + " for sale" }),
       c.suggestedVgPlus ? el("span", { text: "Discogs suggested VG+ price " + gbp(c.suggestedVgPlus.value) }) : null
     ]));
     card.appendChild(el("div", { "class": "actions" }, [
       extLink("btn primary", c.marketUrl, "Buy on Discogs"),
-      el("button", { "class": "btn", type: "button", text: "Check deal", onclick: function () { prefillCalc(c.lowest, null, "VG+", c.reference); } }),
+      el("button", { "class": "btn", type: "button", text: "Check deal", onclick: function () { prefillCalc(c.lowest, c.postEst, "VG+", c.reference); } }),
       el("button", { "class": "btn", type: "button", text: "Want", onclick: function () { addWant(res.query, Math.floor(c.lowest * 0.9), c.reference); } })
     ]));
-    if (!res.authed) card.appendChild(el("p", { "class": "hint tight", text: "No deal score without a reference price. Add a Discogs token in Settings for the Discogs suggested VG+ price, or set your own in Deal." }));
+    card.appendChild(el("p", { "class": "sources", text: "Checked live: Discogs" + (res.ebayStatus === "live" ? " + eBay UK" : "") + ". Other shops are one tap away below." }));
     box.appendChild(card);
   }
 
@@ -199,16 +211,16 @@
           extLink("p-title", p.url, p.album || p.title, { "aria-label": (p.title || "") + ", " + metaLine(p) + " on Discogs" }),
           el("div", { "class": "meta" }, [p.year ? el("b", { "class": "yr", text: p.year }) : null, [p.country, p.label].filter(Boolean).join(" · ")]),
         ]),
-        p.lowest != null ? sticker(gbp(p.lowest), { top: "Lowest", label: "Lowest listed on Discogs now " + gbp(p.lowest) }) : sticker("None", { muted: true, label: "None for sale" }),
+        p.lowest != null ? sticker(gbp(p.total), { top: "Delivered", label: "About " + gbp(p.total) + " delivered" }) : sticker("None", { muted: true, label: "None for sale" }),
         p.format ? el("div", { "class": "fmt", text: p.format }) : null,
         el("div", { "class": "p-facts" }, [
-          el("span", { text: p.lowest != null ? p.forSale + " for sale on Discogs" : (p.statsError ? "Price unavailable just now" : "None for sale on Discogs now") }),
+          el("span", { text: p.lowest != null ? gbp(p.lowest) + " + ~" + gbp(p.postEst) + " post · " + p.forSale + " for sale" : (p.statsError ? "Price unavailable just now" : "None for sale on Discogs now") }),
           p.suggestedVgPlus ? el("span", { text: "Discogs suggested VG+ price " + gbp(p.suggestedVgPlus.value) }) : null,
           verdictStamp(p.score, p.verdict, locked)
         ]),
         el("div", { "class": "actions" }, [
           p.lowest != null ? extLink("btn small primary", p.marketUrl, "Buy") : extLink("btn small", p.url, "Release"),
-          p.lowest != null ? el("button", { "class": "btn small", type: "button", text: "Check deal", onclick: function () { prefillCalc(p.lowest, null, "VG+", p.reference); } }) : null,
+          p.lowest != null ? el("button", { "class": "btn small", type: "button", text: "Check deal", onclick: function () { prefillCalc(p.lowest, p.postEst, "VG+", p.reference); } }) : null,
           el("button", { "class": "btn small", type: "button", text: "Want", onclick: function () { addWant(res.query, p.lowest != null ? Math.floor(p.lowest * 0.9) : 0, p.reference); } })
         ])
       ]));
@@ -230,7 +242,7 @@
           el("div", { "class": "p-body" }, [extLink("p-title", l.url, l.title), el("div", { "class": "meta", text: ["eBay UK", l.conditionText, l.location].filter(Boolean).join(" · ") })]),
           sticker(gbp(l.total), { label: "Total " + gbp(l.total) }),
           el("div", { "class": "p-facts" }, [el("span", { text: gbp(l.price) + " + " + (l.postageKnown ? gbp(l.postage) + " postage" : "postage not shown") }), verdictStamp(l.score, l.verdict, !store.premium)]),
-          el("div", { "class": "actions" }, [extLink("btn small primary", l.url, "Open"), el("button", { "class": "btn small", type: "button", text: "Check deal", onclick: function () { prefillCalc(l.price, l.postage, "VG+", null); } })])
+          el("div", { "class": "actions" }, [extLink("btn small primary", l.url, "Open"), el("button", { "class": "btn small", type: "button", text: "Check deal", onclick: function () { prefillCalc(l.price, l.postage, "VG+", res.market ? res.market.value : null); } })])
         ]));
       });
       box.appendChild(el("div", { "class": "crate" }, [el("div", { "class": "crate-head" }, [el("h3", { "class": "riso", text: "eBay UK" }), el("span", { "class": "mono-tag", text: "Live" })]), ol]));
@@ -325,9 +337,9 @@
       var meter = el("div", { "class": "meter", "aria-hidden": "true" });
       SEG.forEach(function (s) { meter.appendChild(el("span", { "class": "seg-" + s[0], style: "flex:" + s[1] })); });
       meter.appendChild(el("i", { style: "left:" + r.score + "%" })); out.appendChild(meter);
-      out.appendChild(el("div", { "class": "line", text: (r.diff <= 0 ? gbp(-r.diff) + " (" + Math.abs(r.pct) + "%) under" : gbp(r.diff) + " (" + r.pct + "%) over") + " your " + gbp(r.adjustedReference) + " reference for a " + $("cGrade").value + " copy." }));
+      out.appendChild(el("div", { "class": "line", text: (r.diff <= 0 ? gbp(-r.diff) + " (" + Math.abs(r.pct) + "%) under" : gbp(r.diff) + " (" + r.pct + "%) over") + " the going rate (" + gbp(r.adjustedReference) + " for a " + $("cGrade").value + " copy)." }));
       out.appendChild(el("div", { "class": "line", text: "Good deal at " + gbp(r.goodDealBelow) + " or less, postage included." }));
-    } else out.appendChild(el("div", { "class": "line", text: "Add a reference price to get a deal score." }));
+    } else out.appendChild(el("div", { "class": "line", text: "Dig an album first and the going rate fills in here automatically." }));
   }
   ["cPrice", "cPost", "cRef", "cGrade"].forEach(function (id) { $(id).addEventListener("input", calc); $(id).addEventListener("change", calc); });
   $("calcForm").addEventListener("submit", function (e) { e.preventDefault(); });

@@ -18,6 +18,10 @@
     // GET {proxyBase}/buy/browse/v1/... to https://api.ebay.com/buy/browse/v1/... with the same headers.
     // Leave blank: the Android app calls eBay directly, and the web app shows eBay as a link only.
     proxyBase: "https://bin-raider-listings.pennyfar.workers.dev",
+    // Typical UK tracked postage for one LP from a Discogs seller. Discogs' API gives item price only,
+    // so we add this estimate and label it "est." (assumption, check against real seller rates).
+    discogsPostEst: 4.5,
+    artBase: "https://itunes.apple.com/search",
     statsPerSearch: 5,        // marketplace/stats calls per search (Discogs allows ~25/min without a token)
     cacheTtlMs: 60 * 60 * 1000,
     cacheMax: 300
@@ -215,6 +219,27 @@
     }).filter(function (x) { return isFinite(x.price); });
   }
 
+  // ---------- album artwork (Apple iTunes Search API: official, no key) ----------
+  function albumArt(q) {
+    if (!config.artBase) return Promise.resolve(null);
+    var url = config.artBase + "?entity=album&country=GB&limit=1&term=" + encodeURIComponent(q);
+    return getJSON(url, {}).then(function (d) {
+      var r = d && d.results && d.results[0];
+      return r && r.artworkUrl100 ? r.artworkUrl100.replace("100x100bb", "600x600bb") : null;
+    }).catch(function () { return null; });
+  }
+  // ---------- market value ----------
+  var NOT_LP = /(\b7"|\b7 inch|\bsingle\b|\b45\b|\bcd\b|cassette|\btape\b)/i;
+  // Median total (price + postage) of LP copies on eBay UK right now. Skips singles, CDs, cassettes.
+  function marketValue(ebay) {
+    if (!ebay || ebay.length < 3) return null;
+    var t = ebay.filter(function (l) { return !NOT_LP.test(l.title); })
+      .map(function (l) { return l.price + (l.postage || 0); }).sort(function (a, b) { return a - b; });
+    if (t.length < 3) return null;
+    var m = t.length % 2 ? t[(t.length - 1) / 2] : (t[t.length / 2 - 1] + t[t.length / 2]) / 2;
+    return { value: Math.round(m * 100) / 100, count: t.length, low: t[0], high: t[t.length - 1] };
+  }
+
   // ---------- search ----------
   // opts: { keys: {discogsToken, ebayToken}, aff, uk, max }
   function search(query, opts) {
@@ -226,16 +251,23 @@
     var pEbay = Promise.resolve(null);
     if (ebayAvailable(keys)) pEbay = ebayListings(q, keys.ebayToken, opts).catch(function (e) { notes.push("eBay: " + (e.kind === "auth" ? "token expired or invalid; add a fresh one in Settings." : "couldn't load (" + (e.status || e.kind) + ").")); return []; });
     else if (keys.ebayToken) notes.push("eBay live prices work in the Android app. On the web, tap eBay below to search it now.");
-    return Promise.all([pDiscogs, pEbay]).then(function (r) {
-      var d = r[0], ebay = r[1];
+    var pArt = albumArt(q);
+    return Promise.all([pDiscogs, pEbay, pArt]).then(function (r) {
+      var d = r[0], ebay = r[1], art = r[2];
+      var market = marketValue(ebay);
+      if (ebay) ebay = ebay.filter(function (l) { return !NOT_LP.test(l.title); });
       var pressings = d.pressings.slice().sort(function (a, b) {
         var x = a.lowest == null ? Infinity : a.lowest, y = b.lowest == null ? Infinity : b.lowest;
         return x - y;
       });
       pressings.forEach(function (p) {
-        p.reference = p.suggestedVgPlus ? p.suggestedVgPlus.value : null;
+        if (!p.thumb && art) p.thumb = art;
+        p.postEst = p.lowest != null ? config.discogsPostEst : null;
+        p.total = p.lowest != null ? Math.round((p.lowest + config.discogsPostEst) * 100) / 100 : null;
+        p.reference = p.suggestedVgPlus ? p.suggestedVgPlus.value : (market ? market.value : null);
+        p.refSource = p.suggestedVgPlus ? "discogs" : (market ? "market" : null);
         if (p.lowest != null && p.reference) {
-          var ev = Deal.evaluate({ price: p.lowest, postage: 0, reference: p.reference, grade: "VG+" });
+          var ev = Deal.evaluate({ price: p.lowest, postage: config.discogsPostEst, reference: p.reference, grade: "VG+" });
           p.score = ev.score; p.verdict = ev.verdict;
         } else { p.score = null; p.verdict = Deal.verdict(null); }
       });
@@ -244,7 +276,8 @@
       var refs = pressings.filter(function (p) { return p.reference; });
       if (ebay) ebay.forEach(function (l) {
         l.total = Math.round((l.price + (l.postage || 0)) * 100) / 100;
-        var ref = refs.length ? refs[0].reference : null;
+        var ref = market ? market.value : (refs.length ? refs[0].reference : null);
+        if (!l.thumb && art) l.thumb = art;
         var ev = Deal.evaluate({ price: l.price, postage: l.postage || 0, reference: ref, grade: "VG+" });
         l.score = ev.score; l.verdict = ev.verdict;
       });
@@ -252,7 +285,7 @@
       return {
         source: "discogs", query: q, authed: !!keys.discogsToken,
         pressings: pressings, totalPressings: d.totalPressings,
-        cheapest: priced[0] || null, forSale: forSale,
+        cheapest: priced[0] || null, forSale: forSale, art: art, market: market,
         ebay: ebay, ebayStatus: ebay ? "live" : (keys.ebayToken ? "needs-app" : "soon"),
         notes: notes
       };
@@ -261,7 +294,7 @@
 
   var api = {
     config: config, search: search, getJSON: getJSON, friendly: friendly, clearCache: clearCache,
-    parseRelease: parseRelease, applyStats: applyStats, applySuggestion: applySuggestion, parseEbay: parseEbay, formatText: formatText,
+    parseRelease: parseRelease, applyStats: applyStats, applySuggestion: applySuggestion, parseEbay: parseEbay, marketValue: marketValue, formatText: formatText,
     _resetLimiter: function (nowFn) { stamps = []; if (nowFn) limiterNow = nowFn; }
   };
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.BRData = api;

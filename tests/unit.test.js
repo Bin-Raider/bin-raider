@@ -2,7 +2,7 @@ const assert = require("assert");
 const Deal = require("../www/js/deal.js");
 const Sites = require("../www/js/sites.js");
 const Data = require("../www/js/data.js");
-const SHIPPED_PROXY = Data.config.proxyBase; Data.config.proxyBase = ""; // Discogs-only tests run without the listings server
+const SHIPPED_PROXY = Data.config.proxyBase; Data.config.proxyBase = ""; Data.config.artBase = ""; Data.config.discogsPostEst = 0; // Discogs-only tests run without the listings server
 let pass = 0, fail = 0; const out = [];
 function t(name, fn) { try { fn(); pass++; out.push("PASS " + name); } catch (e) { fail++; out.push("FAIL " + name + " :: " + e.message); } }
 
@@ -115,10 +115,16 @@ const fresh = () => { Data.clearCache(); Data._resetLimiter(); calls = []; mode 
     const e = Data.parseEbay({ itemSummaries: [{ itemId: "v1|1|0", title: "Portishead Dummy LP", price: { value: "18.99", currency: "GBP" }, shippingOptions: [{ shippingCost: { value: "3.20", currency: "GBP" } }], condition: "Used", itemWebUrl: "https://www.ebay.co.uk/itm/1", itemLocation: { country: "GB" } }, { itemId: "v1|2|0", title: "no ship", price: { value: "9.00" }, itemWebUrl: "https://www.ebay.co.uk/itm/2" }] }, { epnCampaign: "123" });
     assert.strictEqual(e.length, 2); assert.strictEqual(e[0].price, 18.99); assert.strictEqual(e[0].postage, 3.2); assert.strictEqual(e[1].postageKnown, false); assert.ok(e[0].url.includes("campid=123"));
   });
+  await at("market value: median LP total, skips singles/CDs", () => {
+    const L = (t, p, s) => ({ title: t, price: p, postage: s });
+    const m = Data.marketValue([L("Rumours LP", 10, 3), L("Rumours 7\" single", 2, 1), L("Rumours vinyl", 20, 4), L("Rumours CD", 3, 1), L("Rumours 12\" LP", 15, 3)]);
+    assert.strictEqual(m.value, 18); assert.strictEqual(m.count, 3);
+    assert.strictEqual(Data.marketValue([L("a LP", 1, 1)]), null);
+  });
   await at("config: proxyBase points at the listings server, UA set", () => { assert.strictEqual(SHIPPED_PROXY, "https://bin-raider-listings.pennyfar.workers.dev"); assert.ok(/^BinRaider\/0\.2 /.test(Data.config.userAgent)); });
   await at("no mock search exported", () => { assert.strictEqual(Data.mockSearch, undefined); });
   await at("capacitor config enables CapacitorHttp", () => assert.strictEqual(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "capacitor.config.json"))).plugins.CapacitorHttp.enabled, true));
-  await at("version 0.2.0 everywhere", () => { assert.strictEqual(require("../package.json").version, "0.2.0"); assert.ok(fs.readFileSync(path.join(__dirname, "../www/sw.js"), "utf8").includes("binraider-0.2.0")); assert.ok(fs.readFileSync(path.join(__dirname, "../www/index.html"), "utf8").includes("Bin Raider 0.2.0")); });
+  await at("version 0.3.0 everywhere", () => { assert.strictEqual(require("../package.json").version, "0.3.0"); assert.ok(fs.readFileSync(path.join(__dirname, "../www/sw.js"), "utf8").includes("binraider-0.3.0")); assert.ok(fs.readFileSync(path.join(__dirname, "../www/index.html"), "utf8").includes("Bin Raider 0.3.0")); });
   await at("no Hark branding in www", () => { const walk = d => fs.readdirSync(d, { withFileTypes: true }).flatMap(f => f.isDirectory() ? walk(path.join(d, f.name)) : [path.join(d, f.name)]); walk(path.join(__dirname, "../www")).filter(f => !/\.(png|ttf|woff2?)$/.test(f)).forEach(f => assert.ok(!/hark/i.test(fs.readFileSync(f, "utf8")), f)); });
 
   console.log(out.join("\n")); console.log(`\n${pass} passed, ${fail} failed`); process.exit(fail ? 1 : 0);

@@ -15,7 +15,7 @@
 <body>
   <header class="topbar">
     <div class="brand"><img src="icons/mark.svg" alt="" width="30" height="30"><span class="word">BIN RAIDER</span></div>
-    <span id="srcChip" class="src-chip" role="status"><i aria-hidden="true"></i>Live · Discogs</span>
+    <span id="srcChip" class="src-chip" role="status"><i aria-hidden="true"></i>Live · Discogs + eBay</span>
   </header>
 
   <main id="main">
@@ -60,7 +60,7 @@
         <div id="pick"></div>
         <div id="crate" class="crate" hidden>
           <div class="crate-head"><h3 class="riso" id="crateTitle">Pressings</h3><span id="crateCount" class="mono-tag"></span></div>
-          <p class="crate-cap">Price = lowest listed on Discogs right now for each pressing, any condition, before postage.</p>
+          <p class="crate-cap">Delivered price = cheapest copy of each pressing on Discogs now, plus about £4.50 UK postage (estimate).</p>
           <ol id="pressings" class="pressings"></ol>
           <a id="allPressings" class="more-link" target="_blank" rel="noopener" data-ext="1" hidden></a>
         </div>
@@ -89,13 +89,13 @@
     <!-- CALCULATOR -->
     <section id="view-calc" class="view" aria-label="Deal calculator">
       <h2 class="riso">Is it a deal?</h2>
-      <p class="hint">Price plus postage against a reference price you trust, adjusted for condition.</p>
+      <p class="hint">Price plus postage against the going rate for that album, adjusted for condition.</p>
       <form id="calcForm" class="panel calc">
         <label>Asking price £<input id="cPrice" type="number" inputmode="decimal" min="0" step="0.01" placeholder="12.00"></label>
         <label>Postage £<input id="cPost" type="number" inputmode="decimal" min="0" step="0.01" placeholder="3.50"></label>
         <label>Condition of this copy<select id="cGrade"></select></label>
-        <label><span>Reference price £ <small>(what a VG+ copy is worth to you)</small></span><input id="cRef" type="number" inputmode="decimal" min="0" step="0.01" placeholder="18.00"></label>
-        <p class="hint tight" id="refHint">Use sold prices (Discogs release page or eBay sold) for the reference. With a Discogs token, Bin Raider fills in the Discogs suggested VG+ price.</p>
+        <label><span>Going rate £ <small>(typical VG+ copy, from your last dig)</small></span><input id="cRef" type="number" inputmode="decimal" min="0" step="0.01" placeholder="18.00"></label>
+        <p class="hint tight" id="refHint">Dig an album and Bin Raider fills this in from live eBay UK prices, postage included.</p>
       </form>
       <div id="calcOut" class="panel calc-out" aria-live="polite"></div>
     </section>
@@ -104,29 +104,42 @@
     <section id="view-set" class="view" aria-label="Settings">
       <h2 class="riso">Settings</h2>
       <div class="panel">
+        <h3>Where prices come from</h3>
+        <ul class="plain-list">
+          <li><b>Discogs</b> · cheapest copy of every pressing, live</li>
+          <li><b>eBay UK</b> · live listings with postage, cheapest first</li>
+          <li><b>Going rate</b> · typical delivered price of LP copies on eBay UK right now</li>
+          <li><b>Other shops</b> · Vinted, Facebook, CeX, Oxfam and more open with your search already typed</li>
+        </ul>
+        <p class="hint tight">Discogs postage is an estimate (about £4.50 in the UK). eBay postage is the seller's real price.</p>
+      </div>
+      <div class="panel">
+        <h3>Your data</h3>
+        <button class="btn danger" id="wipe" type="button">Clear my wantlist and search history</button>
+      </div>
+      <details class="panel advanced">
+        <summary>Advanced</summary>
+      <div class="adv-block">
         <h3>Price data</h3>
-        <p class="hint tight">Prices come live from the Discogs API. No key needed.</p>
+        <p class="hint tight">Discogs and eBay UK work out of the box. These are for testing only.</p>
         <label><span>Discogs personal token <small>(optional)</small></span><input id="kDiscogs" type="password" autocomplete="off" placeholder="discogs.com/settings/developers"></label>
         <p class="hint tight">Adds a Discogs suggested VG+ price for each pressing (used for deal stamps), cover pictures, and a higher rate limit.</p>
         <label><span>eBay OAuth application token <small>(optional)</small></span><input id="kEbay" type="password" autocomplete="off" placeholder="developer.ebay.com"></label>
-        <p class="hint tight">eBay live prices work in the Android app. eBay tokens expire after about 2 hours. Keys stay on this phone.</p>
+        <p class="hint tight">Not needed: eBay is built in. Keys stay on this phone.</p>
       </div>
-      <div class="panel">
+      <div class="adv-block">
         <h3>Affiliate ids</h3>
         <label>eBay Partner Network campaign id<input id="aEpn" type="text" inputmode="numeric" placeholder="e.g. 5338000000"></label>
         <label>Amazon Associates tag<input id="aAmz" type="text" placeholder="e.g. binraider-21"></label>
         <p class="hint tight">When set, eBay and Amazon links carry your id. Left blank, links are plain.</p>
       </div>
-      <div class="panel">
+      <div class="adv-block">
         <h3>Premium preview</h3>
         <label class="check"><input type="checkbox" id="premium" checked> Show Premium features (deal stamps on every pressing)</label>
         <p class="hint tight">Prototype only. Nothing is charged.</p>
       </div>
-      <div class="panel">
-        <h3>Your data</h3>
-        <button class="btn danger" id="wipe" type="button">Clear wantlist, history, saved prices and keys</button>
-      </div>
-      <p class="about" id="about">Bin Raider 0.2.0 · Prices from the Discogs API (official APIs only, nothing scraped). Shop names are trademarks of their owners; Bin Raider is not affiliated with them.</p>
+      </details>
+      <p class="about" id="about">Bin Raider 0.3.0 · Prices from the official Discogs and eBay APIs, nothing scraped. Album art from Apple Music. Shop names are trademarks of their owners; Bin Raider is not affiliated with them.</p>
     </section>
   </main>
 

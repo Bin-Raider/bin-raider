@@ -271,3 +271,13 @@ label.check input { width: 22px; height: 22px; min-height: 0; accent-color: var(
   .calc-out { grid-template-columns: 1fr; }
   .calc-out .stamp { justify-self: start; margin-left: 4px; }
 }
+/* 0.3: artwork, going rate, friendlier settings */
+.pick-art { display: block; width: 100%; max-width: 320px; aspect-ratio: 1; object-fit: cover; margin: 0 auto 12px; border: 2px solid var(--ink, #15110E); box-shadow: 4px 4px 0 var(--ink, #15110E); }
+.market { display: grid; grid-template-columns: auto 1fr; gap: 2px 10px; align-items: baseline; padding: 10px 12px; margin-bottom: 12px; border: 2px dashed var(--ink, #15110E); }
+.market b { font: 400 26px/1 "Archivo Black", sans-serif; }
+.market .meta { grid-column: 1 / -1; }
+.sources { font: 700 11px/1.4 var(--mono); text-transform: uppercase; letter-spacing: .06em; margin: 12px 0 0; opacity: .8; }
+.plain-list { list-style: none; padding: 0; margin: 0 0 8px; }
+.plain-list li { padding: 8px 0; border-bottom: 1px dashed rgba(21,17,14,.3); line-height: 1.4; }
+.advanced > summary { cursor: pointer; font: 400 16px/1.2 "Archivo Black", sans-serif; padding: 4px 0; }
+.adv-block { margin-top: 14px; padding-top: 12px; border-top: 2px solid var(--ink, #15110E); }
