@@ -17,7 +17,7 @@
     // Optional. eBay Browse does not allow browser CORS, so the PWA needs a small proxy that forwards
     // GET {proxyBase}/buy/browse/v1/... to https://api.ebay.com/buy/browse/v1/... with the same headers.
     // Leave blank: the Android app calls eBay directly, and the web app shows eBay as a link only.
-    proxyBase: "",
+    proxyBase: "https://bin-raider-listings.pennyfar.workers.dev",
     statsPerSearch: 5,        // marketplace/stats calls per search (Discogs allows ~25/min without a token)
     cacheTtlMs: 60 * 60 * 1000,
     cacheMax: 300
@@ -188,15 +188,17 @@
   }
 
   // ---------- eBay Browse ----------
-  function ebayAvailable(keys) { return !!(keys && keys.ebayToken) && (isNative() || !!config.proxyBase); }
+  // With proxyBase set, the Bin Raider listings server mints eBay tokens itself, so no user token is needed.
+  function ebayAvailable(keys) { return !!config.proxyBase || (!!(keys && keys.ebayToken) && isNative()); }
   function ebayListings(query, token, opts) {
     var filters = ["deliveryCountry:GB", "priceCurrency:GBP"];
     if (opts && opts.uk) filters.push("itemLocationCountry:GB");
     if (opts && opts.max) filters.push("price:[.." + Math.floor(opts.max) + "]");
-    var base = isNative() ? config.ebayBase : config.proxyBase.replace(/\/$/, "");
+    var viaProxy = !!config.proxyBase && !(token && isNative());
+    var base = viaProxy ? config.proxyBase.replace(/\/$/, "") : config.ebayBase;
     var url = base + "/buy/browse/v1/item_summary/search?category_ids=176985&limit=20&sort=price&q=" +
       encodeURIComponent(query) + "&filter=" + encodeURIComponent(filters.join(","));
-    var h = { "Authorization": "Bearer " + token, "X-EBAY-C-MARKETPLACE-ID": "EBAY_GB", "X-EBAY-C-ENDUSERCTX": "contextualLocation=country%3DGB" };
+    var h = viaProxy ? {} : { "Authorization": "Bearer " + token, "X-EBAY-C-MARKETPLACE-ID": "EBAY_GB", "X-EBAY-C-ENDUSERCTX": "contextualLocation=country%3DGB" };
     return getJSON(url, h).then(function (d) { return parseEbay(d, opts && opts.aff); });
   }
   function parseEbay(d, aff) {

@@ -2,6 +2,7 @@ const assert = require("assert");
 const Deal = require("../www/js/deal.js");
 const Sites = require("../www/js/sites.js");
 const Data = require("../www/js/data.js");
+const SHIPPED_PROXY = Data.config.proxyBase; Data.config.proxyBase = ""; // Discogs-only tests run without the listings server
 let pass = 0, fail = 0; const out = [];
 function t(name, fn) { try { fn(); pass++; out.push("PASS " + name); } catch (e) { fail++; out.push("FAIL " + name + " :: " + e.message); } }
 
@@ -114,7 +115,7 @@ const fresh = () => { Data.clearCache(); Data._resetLimiter(); calls = []; mode 
     const e = Data.parseEbay({ itemSummaries: [{ itemId: "v1|1|0", title: "Portishead Dummy LP", price: { value: "18.99", currency: "GBP" }, shippingOptions: [{ shippingCost: { value: "3.20", currency: "GBP" } }], condition: "Used", itemWebUrl: "https://www.ebay.co.uk/itm/1", itemLocation: { country: "GB" } }, { itemId: "v1|2|0", title: "no ship", price: { value: "9.00" }, itemWebUrl: "https://www.ebay.co.uk/itm/2" }] }, { epnCampaign: "123" });
     assert.strictEqual(e.length, 2); assert.strictEqual(e[0].price, 18.99); assert.strictEqual(e[0].postage, 3.2); assert.strictEqual(e[1].postageKnown, false); assert.ok(e[0].url.includes("campid=123"));
   });
-  await at("config: proxyBase present and blank, UA set", () => { assert.strictEqual(Data.config.proxyBase, ""); assert.ok(/^BinRaider\/0\.2 /.test(Data.config.userAgent)); });
+  await at("config: proxyBase points at the listings server, UA set", () => { assert.strictEqual(SHIPPED_PROXY, "https://bin-raider-listings.pennyfar.workers.dev"); assert.ok(/^BinRaider\/0\.2 /.test(Data.config.userAgent)); });
   await at("no mock search exported", () => { assert.strictEqual(Data.mockSearch, undefined); });
   await at("capacitor config enables CapacitorHttp", () => assert.strictEqual(JSON.parse(fs.readFileSync(path.join(__dirname, "..", "capacitor.config.json"))).plugins.CapacitorHttp.enabled, true));
   await at("version 0.2.0 everywhere", () => { assert.strictEqual(require("../package.json").version, "0.2.0"); assert.ok(fs.readFileSync(path.join(__dirname, "../www/sw.js"), "utf8").includes("binraider-0.2.0")); assert.ok(fs.readFileSync(path.join(__dirname, "../www/index.html"), "utf8").includes("Bin Raider 0.2.0")); });
